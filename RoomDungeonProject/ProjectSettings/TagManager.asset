@@ -17,6 +17,8 @@ TagManager:
   - PlayerAttack
   - OneWay
   - NextMap
+  - MonsterAttack
+  - FitWall
   layers:
   - Default
   - TransparentFX
@@ -30,8 +32,8 @@ TagManager:
   - 
   - PlayerAttack
   - NextMap
-  - 
-  - 
+  - MonsterAttack
+  - FitWall
   - 
   - 
   - 

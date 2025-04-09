@@ -8,6 +8,8 @@ public class FadeSystemManager : MonoBehaviour
 
     public Image fadeImage;
     public float fadeDuration = 0.5f;
+        
+    public bool isFading = false;
 
     private void Awake()
     {
@@ -19,11 +21,13 @@ public class FadeSystemManager : MonoBehaviour
 
     public IEnumerator FadeOut()
     {
+        isFading = true;
         yield return StartCoroutine(Fade(0f, 1f));
     }
 
     public IEnumerator FadeIn()
     {
+        isFading = false;
         yield return StartCoroutine(Fade(1f, 0f));
     }
 

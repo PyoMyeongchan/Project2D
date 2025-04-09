@@ -47,7 +47,6 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-
     public IEnumerator AirShake()
     {
         if (mPerlin != null)

@@ -8,12 +8,12 @@ public class PlayerOneWay : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Space))
         {
-            if (OneWayPlatform = null)
+            if (OneWayPlatform != null)
             {
                 StartCoroutine(DisableCollision());
-            }    
+            }
         }
     }
 
@@ -24,6 +24,8 @@ public class PlayerOneWay : MonoBehaviour
         { 
             OneWayPlatform = collision.gameObject;
         }
+
+
     }
 
 
@@ -40,8 +42,8 @@ public class PlayerOneWay : MonoBehaviour
     {
         CapsuleCollider2D capsule = gameObject.GetComponent<CapsuleCollider2D>();
         BoxCollider2D boxMap = OneWayPlatform.GetComponent<BoxCollider2D>();
-
-        Physics2D.IgnoreCollision(capsule, boxMap);
+                
+        Physics2D.IgnoreCollision(capsule, boxMap, true);
         yield return new WaitForSeconds(0.25f);
         Physics2D.IgnoreCollision(capsule, boxMap, false);
 

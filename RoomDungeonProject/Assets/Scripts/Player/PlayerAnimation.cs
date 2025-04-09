@@ -40,4 +40,9 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetTrigger("Roll");
     }
 
+    public void TriggerDamaged()
+    {
+        animator.SetTrigger("Damaged");
+    }    
+
 }

@@ -18,10 +18,15 @@ public class PlayerTrigger : MonoBehaviour
     public CinemachineCamera mainCam;
     public Collider2D startCollide;
 
+    private PlayerDamage playerDamage;
+    private PlayerAnimation playerAnimation;
+
 
     private void Start()
     {
         startPlayerPos = transform.position;
+        playerAnimation = GetComponent<PlayerAnimation>();
+        playerDamage = GetComponent<PlayerDamage>();
 
     }
 
@@ -30,6 +35,22 @@ public class PlayerTrigger : MonoBehaviour
         
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        // 함정에 있을때 피격유지
+        if (collision.gameObject.layer == 13)
+        {
+            if (!playerDamage.isInvincible)
+            {
+                SoundManager.instance.PlaySFX(SFXType.Damaged);
+                playerAnimation.TriggerDamaged();
+                StartCoroutine(playerDamage.IsInvincible());
+                StartCoroutine(CameraManager.instance.DamagedShake());
+            }
+        }
+
+
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Key"))
@@ -68,11 +89,12 @@ public class PlayerTrigger : MonoBehaviour
 
         // F키 누르면 안되는지 확인해보기
         if (collision.CompareTag("Door"))
-        {           
+        {
             StartCoroutine(ChangFirstMap());
+            
         }
 
-        // 할당은 되고있는데 콜라이더의 크기 문제인지 카메라가 이동을 하지 않음
+        
         if (collision.gameObject.layer == 11)
         {
 
@@ -83,15 +105,28 @@ public class PlayerTrigger : MonoBehaviour
                 StartCoroutine(ChangInMap(newCollider));
             }
              
+        }
 
+        // 몬스터 공격시 피격
+        if (collision.gameObject.layer == 12)
+        {
+            if (!playerDamage.isInvincible)
+            {
+                SoundManager.instance.PlaySFX(SFXType.Damaged);
+                StartCoroutine(CameraManager.instance.Shake());
+                playerAnimation.TriggerDamaged();
+                StartCoroutine(playerDamage.IsInvincible());
+            }
         }
  
     }
 
     IEnumerator ChangInMap(PolygonCollider2D newCollider)
     {
-        yield return FadeSystemManager.instance.FadeOut();
-
+        if (FadeSystemManager.instance.isFading == false)
+        { 
+            yield return FadeSystemManager.instance.FadeOut();
+        }
         var brain = mainCamera.GetComponent<CinemachineBrain>();
         brain.enabled = false;
 
@@ -99,43 +134,35 @@ public class PlayerTrigger : MonoBehaviour
 
         confiner.BoundingShape2D = null;
         confiner.InvalidateBoundingShapeCache();
+        mainCam.Target.TrackingTarget = null;   
 
-        yield return null; 
+        yield return new WaitForSeconds(0.1f);
 
+        mainCam.Target.TrackingTarget = gameObject.transform;
         confiner.BoundingShape2D = newCollider;
         confiner.InvalidateBoundingShapeCache();
+        
         AdjustCameraZoomToBounds(newCollider.bounds);
 
-        brain.enabled = true;
+        brain.enabled = true;        
         yield return FadeSystemManager.instance.FadeIn();
     }
-    // 시작할때 두번 페이드인 페이드아웃이 되는 현상
+    
     IEnumerator ChangFirstMap()
     {
+
         yield return FadeSystemManager.instance.FadeOut();
-        
-        mainCamera.GetComponent<CinemachineBrain>().enabled = false;
-
-        var confiner = mainCam.GetComponent<CinemachineConfiner2D>();
-        confiner.BoundingShape2D = null;
-        transform.position = startMapPos.position;   
-        confiner.InvalidateBoundingShapeCache();
-        
-
-        mainCamera.GetComponent<CinemachineBrain>().enabled = true;
-        
-        StartCoroutine(TimeStop());
-        
-        yield return new WaitForSeconds(1.0f);        
-        yield return FadeSystemManager.instance.FadeIn();
-        
+        transform.position = startMapPos.position;
+        StartCoroutine(TimeStop(2.0f));
+        yield return new WaitForSeconds(1.0f);
+         
     }
 
     // Realtime으로하여야 실제 시간이 지나감
-    IEnumerator TimeStop()
+    IEnumerator TimeStop(float time)
     {
         Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(2.0f);
+        yield return new WaitForSecondsRealtime(time);
         Time.timeScale = 1f;
     }
 
