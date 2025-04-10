@@ -5,7 +5,6 @@ using UnityEngine;
 
 public enum StateType
 { 
-    None,
     Idle,
     Run,
     ChaseRun,
@@ -26,7 +25,7 @@ public class RatManager : MonoBehaviour
 
     public StateType currentState = StateType.Idle;
 
-    // 플레이어보다 1칸식 뒤나 앞으로
+    
     public Transform player;
     public float chaseRange = 5.0f;
     public float attackingRange = 1.5f;
@@ -49,7 +48,7 @@ public class RatManager : MonoBehaviour
         {
             player = GameObject.FindGameObjectWithTag("Player").transform;
         }
-
+        currentState = StateType.Idle;
         stateChange = StartCoroutine(RandomStateChanger());
 
         ratAnimaton = GetComponent<RatAnimaton>();
@@ -59,7 +58,7 @@ public class RatManager : MonoBehaviour
 
     private void Update()
     {
-        if (currentState == StateType.None || player == null) return;
+        if (player == null) return;
 
         float distancetoPlayer = Vector2.Distance(transform.position, player.transform.position);
 
@@ -77,26 +76,27 @@ public class RatManager : MonoBehaviour
         if (distancetoPlayer <= chaseRange)
         {
             
-            if (currentState != StateType.Idle || currentState != StateType.Run)
+            if (currentState != StateType.Idle && currentState != StateType.Run)
             {
                 if (stateChange != null)
                 {
                     StopCoroutine(stateChange);
+                    
                 }
                 int chaseType = Random.Range(0, 2);
                 currentState = chaseType == 0 ? StateType.Idle :StateType.Run;
 
-                if (transform.position.x > player.transform.position.x)
-                {
-                    GetComponent<SpriteRenderer>().flipX = true;
-                }
-                else if (transform.position.x <= player.transform.position.x)
-                {
-                    GetComponent<SpriteRenderer>().flipX = false;
-                }
-
             }
-            
+
+            if (transform.position.x > player.transform.position.x)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else if (transform.position.x <= player.transform.position.x)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+
             Vector3 directionToPlayer = (player.position - transform.position).normalized;
             float chaseSpeed = currentState == StateType.Run ? speed * 2 : speed;
             transform.position += directionToPlayer * chaseSpeed * Time.deltaTime;
@@ -160,13 +160,14 @@ public class RatManager : MonoBehaviour
         }
     }
 
-    // 공격시 잠시 멈춤 구현하기
     IEnumerator AttackRoutine()
     {
         isAttacking = true;
-        
-        yield return new WaitForSeconds(3.0f);
+        float originalSpeed = speed;
+        speed = 0;
         ratAnimaton.RatAttack();
+        yield return new WaitForSeconds(3.0f);
+        speed = originalSpeed;
         isAttacking = false;
         
         stateChange = StartCoroutine(RandomStateChanger());
@@ -188,16 +189,9 @@ public class RatManager : MonoBehaviour
 
     public void FilpAttackEnd()
     {
-        if (gameObject.GetComponent<SpriteRenderer>().flipX == true)
-        {
-            ratAttack1.GetComponent<BoxCollider2D>().enabled = false;
-            ratAttack2.GetComponent<BoxCollider2D>().enabled = false;
-        }
-        else
-        {
-            ratAttack1.GetComponent<BoxCollider2D>().enabled = false;
-            ratAttack2.GetComponent<BoxCollider2D>().enabled = false;
-        }
+
+        ratAttack1.GetComponent<BoxCollider2D>().enabled = false;
+        ratAttack2.GetComponent<BoxCollider2D>().enabled = false;
 
     }
 

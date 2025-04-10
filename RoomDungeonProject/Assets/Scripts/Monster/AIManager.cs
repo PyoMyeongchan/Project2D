@@ -1,96 +1,77 @@
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 
-// 스포너를 관리
-// 현재 스포너가 랜덤으로 나오는 현상이 있음 확인하고 수정해야함
-
-
-public enum SpawnMonster
-{ 
-    None,
-    Rat,
-    Skeleton
-
-}
-
 public class AIManager : MonoBehaviour
 {
-    public GameObject monsterPrefab;
+    public List<SpawnMonsterData> MonsterList = new List<SpawnMonsterData>();
     public float spawnRangeX = 10.0F;
     public float spawnRangeY = 5.0f;
-    public int enemyCount = 5;
     public Transform[] spawnPoints;
-    public SpawnMonster monsterType = SpawnMonster.None;
+    private Queue<Transform> spawnQueue;
 
-    private float monsterSpeed = 1.0f;
-    private float monsterHP = 1.0f;
-    private float monsterDamage = 5.0f;
 
-    void Start()
+
+    public void SpawnAllMonsters()
     {
-        SpawnEnemies();
-        MonsterSetState();
-    }
+        spawnQueue = new Queue<Transform>(spawnPoints.OrderBy(x => Random.value));
 
-    private void Update()
-    {
-        
-    }
-
-    void SpawnEnemies()
-    {
-        for (int i = 0; i < enemyCount; i++)
+        foreach (SpawnMonsterData info in MonsterList)
         {
-            if (spawnPoints.Length > 0)
+            SpawnMonsterGroup(info);
+        }
+    }
+
+    void SpawnMonsterGroup(SpawnMonsterData info)
+    {
+        for (int i = 0; i < info.count; i++)
+        {
+            Vector2 spawnPos = GetSpawnPosition();
+
+            GameObject obj = Instantiate(info.monsterPrefab, spawnPos, Quaternion.identity);
+
+            ParticleManager.Instance.ParticlePlay(ParticleType.MonsterSpawn, spawnPos, new Vector3(4f, 4f, 4f));
+            SoundManager.instance.PlaySFX(SFXType.SpawnSound);
+
+            // 어떤 타입인지 prefab에 붙은 스크립트로 판단
+            var rat = obj.GetComponent<RatManager>();
+            if (rat != null)
             {
-                int randomIndex = Random.Range(0, spawnPoints.Length);
-                Vector2 spawnPosition = spawnPoints[randomIndex].position;
-                Instantiate(monsterPrefab, spawnPosition, Quaternion.identity);
+                rat.speed = Random.Range(info.minSpeed, info.maxSpeed);
+                rat.hp = Random.Range(info.minHP, info.maxHP);
+                rat.damage = Random.Range(info.minDamage, info.maxDamage);
+                continue;
             }
-            else 
-            { 
-                float randomX = Random.Range(-spawnRangeX, spawnRangeY);
-                float randomY = Random.Range(-spawnRangeY, spawnRangeX);
-                Vector2 randomPosition = new Vector2 (randomX, randomY);
-                Instantiate(monsterPrefab, randomPosition, Quaternion.identity);
-            }
-        }
 
+            /* 스켈레톤 추가하기
+            var skeleton = obj.GetComponent<SkeletonManager>();
+            if (skeleton != null)
+            {
+                skeleton.speed = Random.Range(info.minSpeed, info.maxSpeed);
+                skeleton.hp = Random.Range(info.minHP, info.maxHP);
+                skeleton.damage = Random.Range(info.minDamage, info.maxDamage);
+                continue;
+            }
+            */
+            Debug.LogWarning("몬스터 프리팹에 스크립트이 붙어있지 않거나 미인식된 타입.");
+        }
     }
 
-    void MonsterSetState()
-    { 
-        RatManager rat = monsterPrefab.GetComponent<RatManager>();
-        float minSpeed = 1f;
-        float maxSpeed = 10f;
-        float minHP = 1f;
-        float maxHP = 10f;
-        float mindamage = 1f;
-        float maxdamage = 5f;
-
-        if (monsterType == SpawnMonster.Rat)
+    Vector2 GetSpawnPosition()
+    {
+        if (spawnQueue != null && spawnPoints.Length > 0)
         {
-            minSpeed = 1f;
-            maxSpeed = 5f;
-            minHP = 1f;
-            maxHP = 10f;
-            mindamage = 1f;
-            maxdamage = 5f;
+            int index = Random.Range(0, spawnPoints.Length);
+            return spawnPoints[index].position;
         }
-        else if (monsterType == SpawnMonster.Skeleton)
-        { 
-        
+        else
+        {
+            float x = Random.Range(-spawnRangeX, spawnRangeX);
+            float y = Random.Range(-spawnRangeY, spawnRangeY);
+            return new Vector2(x, y);
         }
-
-        monsterSpeed = Random.Range(minSpeed, maxSpeed);
-        monsterDamage = Random.Range(mindamage, maxdamage);
-        monsterHP = Random.Range(minHP, maxHP);
-        rat.speed = monsterSpeed;
-        rat.hp = monsterHP;
-        rat.damage = monsterDamage;
-
-    
     }
 
     private void OnDrawGizmosSelected()
@@ -107,5 +88,19 @@ public class AIManager : MonoBehaviour
             }
         }
     }
+
+}
+
+[System.Serializable]
+public class SpawnMonsterData
+{
+    public GameObject monsterPrefab;
+    public int count;
+    public float minSpeed = 1f;
+    public float maxSpeed = 10f;
+    public float minHP = 1f;
+    public float maxHP = 10f;
+    public float minDamage = 1f;
+    public float maxDamage = 5f;
 
 }

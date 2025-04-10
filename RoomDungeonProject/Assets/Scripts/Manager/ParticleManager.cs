@@ -6,7 +6,8 @@ public enum ParticleType
 { 
     PlayerAttack,
     PlayerDamage,
-    BossAttack
+    BossAttack,
+    MonsterSpawn
 }
 
 public class ParticleManager : MonoBehaviour
@@ -18,6 +19,7 @@ public class ParticleManager : MonoBehaviour
 
     // 파티클 더 추가하기
     public GameObject playerAttackPrefab;
+    public GameObject spawnParticle;
 
 
     public int poolSize = 10;
@@ -35,6 +37,7 @@ public class ParticleManager : MonoBehaviour
         }
 
         particlePrefabDic.Add(ParticleType.PlayerAttack, playerAttackPrefab);
+        particlePrefabDic.Add(ParticleType.MonsterSpawn, spawnParticle);
 
         foreach (var type in particlePrefabDic.Keys)
         { 

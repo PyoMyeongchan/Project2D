@@ -20,7 +20,8 @@ public enum SFXType
     RollSound,
     StepSound,
     MouseHitSound,
-    PauseSound
+    PauseSound,
+    SpawnSound
 
 }
 
@@ -217,16 +218,5 @@ public class SoundManager : MonoBehaviour
     {
         sfxSource.volume = volume;
         PlayerPrefs.SetFloat("SFXVolume", volume);
-    }
-
-    void Start()
-    {
-        
-    }
-
-
-    void Update()
-    {
-        
     }
 }

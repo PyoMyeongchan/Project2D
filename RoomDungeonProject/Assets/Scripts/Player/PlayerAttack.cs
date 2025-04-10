@@ -106,16 +106,8 @@ public class PlayerAttack : MonoBehaviour
 
     public void FilpAttackEnd()
     {
-        if (gameObject.GetComponent<SpriteRenderer>().flipX == true)
-        {
-            attackObject1.GetComponent<BoxCollider2D>().enabled = false;
-            attackObject2.GetComponent<BoxCollider2D>().enabled = false;            
-        }
-        else
-        {
-            attackObject1.GetComponent<BoxCollider2D>().enabled = false;
-            attackObject2.GetComponent<BoxCollider2D>().enabled = false;
-        }
+        attackObject1.GetComponent<BoxCollider2D>().enabled = false;
+        attackObject2.GetComponent<BoxCollider2D>().enabled = false;            
 
     }
 

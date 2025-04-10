@@ -44,6 +44,7 @@ public class MonsterManager : MonoBehaviour
                 StartCoroutine(CameraManager.instance.Shake());
 
                 ParticleManager.Instance.ParticlePlay(ParticleType.PlayerAttack, transform.position, new Vector3(4f, 4f, 4f));
+                
             }
         }
     }
