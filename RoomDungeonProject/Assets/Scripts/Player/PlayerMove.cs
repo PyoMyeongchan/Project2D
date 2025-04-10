@@ -30,12 +30,15 @@ public class PlayerMove : MonoBehaviour
 
     private Camera mainCamera;
 
+    private PlayerDamage playerDamage;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
         mainCamera = Camera.main;
-        playerAttack = GetComponent<PlayerAttack>();    
+        playerAttack = GetComponent<PlayerAttack>();  
+        playerDamage = GetComponent<PlayerDamage>();
     }
 
     public void HandleMovement()
@@ -167,15 +170,15 @@ public class PlayerMove : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(direction * rollSpeed, 0);
             elapsedTime += Time.deltaTime;
-
-            // 구르기 시 무적
-            // gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
+                  
+            playerDamage.isInvincible = true;
             yield return null;
         }
 
         rb.linearVelocity = Vector2.zero;
         rb.gravityScale = currentGravity;
-        //gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
+       
+        playerDamage.isInvincible = false;
         isRolling = false;
     }
 
