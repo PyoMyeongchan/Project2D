@@ -20,5 +20,9 @@ public class RatAnimaton : MonoBehaviour
         animator.SetBool("RatRun", isRun);
     }
 
+    public void RatDead()
+    {
+        animator.SetTrigger("RatDead");
+    }
 
 }

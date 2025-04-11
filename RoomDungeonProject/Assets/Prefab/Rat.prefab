@@ -39,7 +39,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2174805407343111944}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -117,7 +117,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6101681808699765155}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -360,6 +360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorChangeDuration: 0.5
   monsterType: 1
+  isInvincible: 0
 --- !u!114 &9124961796167049794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,8 +379,8 @@ MonoBehaviour:
   damage: 4.0976143
   currentState: 1
   player: {fileID: 0}
-  chaseRange: 5
-  attackingRange: 1.5
+  chaseRange: 6
+  attackingRange: 1
   isAttacking: 0
   ratAttack1: {fileID: 6101681808699765155}
   ratAttack2: {fileID: 2174805407343111944}

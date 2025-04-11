@@ -15,16 +15,19 @@ public class MonsterManager : MonoBehaviour
     private Color originalColor;
     private Renderer objectRenderer;
     public float colorChangeDuration = 0.5f;
-    private float monsterHP;
+    
     public MonsterType monsterType = MonsterType.None;
 
-    private bool isInvincible = false;
+    public bool isInvincible = false;
+
+    private RatManager ratManager;
 
 
     void Start()
     {
         objectRenderer = GetComponent<Renderer>();
         originalColor = objectRenderer.material.color;
+        ratManager =GetComponent<RatManager>();
 
     }
 
@@ -56,6 +59,7 @@ public class MonsterManager : MonoBehaviour
         if (monsterType == MonsterType.Rat)
         {
             SoundManager.instance.PlaySFX(SFXType.MouseHitSound);
+            ratManager.hp--;
         }
         else if (monsterType == MonsterType.Skeleton)
         { 

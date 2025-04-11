@@ -34,6 +34,7 @@ public class RatManager : MonoBehaviour
     private Coroutine stateChange;
 
     private RatAnimaton ratAnimaton;
+    private MonsterManager monsterManager;
 
     public GameObject ratAttack1;
     public GameObject ratAttack2;
@@ -52,6 +53,7 @@ public class RatManager : MonoBehaviour
         stateChange = StartCoroutine(RandomStateChanger());
 
         ratAnimaton = GetComponent<RatAnimaton>();
+        monsterManager = GetComponent<MonsterManager>();
 
 
     }
@@ -61,6 +63,12 @@ public class RatManager : MonoBehaviour
         if (player == null) return;
 
         float distancetoPlayer = Vector2.Distance(transform.position, player.transform.position);
+
+        if (hp <= 0)
+        { 
+            currentState = StateType.Dead;
+        }
+        Dead();
 
         if (distancetoPlayer <= attackingRange && !isAttacking)
         {
@@ -111,6 +119,7 @@ public class RatManager : MonoBehaviour
             if (stateChange == null)
             {
                 stateChange = StartCoroutine(RandomStateChanger());
+
             }
         }
         if (currentState == StateType.Attack)
@@ -118,7 +127,7 @@ public class RatManager : MonoBehaviour
             return;
         }
         PatrolMovement();
-
+   
     }
 
 
@@ -144,9 +153,21 @@ public class RatManager : MonoBehaviour
             transform.position += new Vector3(speed * direction * Time.deltaTime, 0, 0);
         }
 
-
-
         
+    }
+
+    // 죽는게 어색함 - idle하다가 죽는 버그가 있음
+
+    private void Dead()
+    {
+        if (currentState == StateType.Dead)
+        {
+            ratAnimaton.RatDead();
+            speed = 0;
+            chaseRange = 0;
+            monsterManager.isInvincible = true;
+            Destroy(gameObject, 2.0f);
+        }
     }
 
     IEnumerator RandomStateChanger()
@@ -166,6 +187,7 @@ public class RatManager : MonoBehaviour
         float originalSpeed = speed;
         speed = 0;
         ratAnimaton.RatAttack();
+        SoundManager.instance.PlaySFX(SFXType.MouseAttackSound);
         yield return new WaitForSeconds(3.0f);
         speed = originalSpeed;
         isAttacking = false;
@@ -194,6 +216,7 @@ public class RatManager : MonoBehaviour
         ratAttack2.GetComponent<BoxCollider2D>().enabled = false;
 
     }
+
 
 
 }

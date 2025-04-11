@@ -21,7 +21,9 @@ public enum SFXType
     StepSound,
     MouseHitSound,
     PauseSound,
-    SpawnSound
+    SpawnSound,
+    MouseAttackSound,
+    GateOpenSound
 
 }
 

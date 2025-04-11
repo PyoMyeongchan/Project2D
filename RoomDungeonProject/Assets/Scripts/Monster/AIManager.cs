@@ -13,7 +13,6 @@ public class AIManager : MonoBehaviour
     private Queue<Transform> spawnQueue;
 
 
-
     public void SpawnAllMonsters()
     {
         spawnQueue = new Queue<Transform>(spawnPoints.OrderBy(x => Random.value));

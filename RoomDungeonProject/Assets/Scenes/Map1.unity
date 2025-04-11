@@ -2282,7 +2282,7 @@ Transform:
   m_GameObject: {fileID: 838027091}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.12, y: -4, z: 0}
+  m_LocalPosition: {x: 30.83, y: -4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15027,7 +15027,7 @@ Transform:
   m_GameObject: {fileID: 1164881765}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.43, y: -4.36, z: 0}
+  m_LocalPosition: {x: 29.92, y: -4.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18236,6 +18236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackObject1: {fileID: 1709031240}
   attackObject2: {fileID: 903447224}
+  attackDamage: 1
   isAttacking: 0
   attackStateName: Attack1Ani
 --- !u!114 &2003521741

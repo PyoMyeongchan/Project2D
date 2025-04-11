@@ -14,6 +14,8 @@ public class PlayerAttack : MonoBehaviour
     public GameObject attackObject1;
     public GameObject attackObject2;
 
+    public float attackDamage = 1.0f;
+
 
 
 
